@@ -65,8 +65,8 @@ information.
 
 ## Compiling From Source
 
-1. `git clone https://github.com/Axionize/LightningGrim`
-2. `cd LightningGrim`
+1. `git clone [https://github.com/Axionize/LightningGrim](https://github.com/KlovyEuV2/SnowGrim.git)`
+2. `cd SnowGrim`
 3. `./gradlew build`
 4. The final jars will compile into the `<platform>/build/libs` folders
 
