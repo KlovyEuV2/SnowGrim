@@ -28,7 +28,7 @@ public class NoSlow extends Check implements PostPredictionCheck {
     public void onPredictionComplete(final PredictionComplete predictionComplete) {
         if (!predictionComplete.isChecked()) return;
 
-        // If the player was using an item for certain, and their predicted velocity had a flipped item
+        // If the player was using an item for certain, and their predicted velocity had a flipped item //
         if (alternativeNoslowFix) {
             if (player.packetStateData.isSlowedByUsingItem() && buffer++ > 1) {
                 // 1.8 users are not slowed the first tick they use an item, strangely
