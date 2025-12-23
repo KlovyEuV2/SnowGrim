@@ -31,6 +31,7 @@ import ac.grim.grimac.utils.reflection.ReflectionUtils;
 import lombok.Getter;
 import org.incendo.cloud.CommandManager;
 import org.jetbrains.annotations.NotNull;
+import ac.grim.grimac.outserver.*;
 
 @Getter
 public final class GrimAPI {
@@ -50,6 +51,7 @@ public final class GrimAPI {
     private ViolationDatabaseManager violationDatabaseManager;
     private PlatformLoader loader;
     private NpcManager npcManager;
+    private OutServer outServer;
     @Getter
     private InitManager initManager;
     private boolean initialized = false;
@@ -82,6 +84,16 @@ public final class GrimAPI {
         this.initManager = new InitManager(loader.getPacketEvents(), loader::getCommandManager, platformSpecificInitables);
         this.initManager.load();
         this.npcManager = new NpcManager(INSTANCE.getConfigManager().getConfig());
+        String host = configManager.getConfig().getStringElse("server.host","127.0.0.1");
+        int port = configManager.getConfig().getIntElse("server.port",8080);
+        OutServer.ConnectionType cType;
+        try {
+            cType = OutServer.ConnectionType.valueOf(configManager.getConfig().getStringElse("server.connection.type","TCP"));
+        } catch (Exception ex) {
+            cType = OutServer.ConnectionType.TCP;
+        }
+        String token = configManager.getConfig().getStringElse("server.token","");
+        this.outServer = new OutServer(host,port,cType,token);
         this.initialized = true;
     }
 
@@ -92,6 +104,7 @@ public final class GrimAPI {
 
     public void stop() {
         checkInitialized();
+        OutServer.shutdown();
         initManager.stop();
     }
 

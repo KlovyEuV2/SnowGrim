@@ -6,6 +6,7 @@ import ac.grim.grimac.checks.type.PacketCheck;
 import ac.grim.grimac.player.GrimPlayer;
 import com.github.retrooper.packetevents.event.PacketReceiveEvent;
 import com.github.retrooper.packetevents.protocol.packettype.PacketType;
+import com.github.retrooper.packetevents.protocol.player.GameMode;
 import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientPlayerFlying;
 
 @CheckData(name = "AirStuckA")
@@ -22,10 +23,12 @@ public class AirStuckA extends Check implements PacketCheck {
 
     @Override
     public void onPacketReceive(PacketReceiveEvent event) {
+        if (player.disableGrim) return;
         if (isTransaction(event.getPacketType()) && !player.onGround) {
             long currentTime = System.currentTimeMillis();
             long diff = currentTime - this.lastTransTime;
-            boolean exempt = player.inVehicle() ||
+            boolean exempt = player.inVehicle() || player.compensatedEntities.self.isDead ||
+                    player.gamemode.equals(GameMode.SPECTATOR) ||
                     player.compensatedWorld.isNearHardEntity(player.boundingBox);
 
             if (diff > 2000L) {

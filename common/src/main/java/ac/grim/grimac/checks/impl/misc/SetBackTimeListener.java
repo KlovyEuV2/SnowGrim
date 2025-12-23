@@ -5,6 +5,7 @@ import ac.grim.grimac.checks.CheckData;
 import ac.grim.grimac.checks.type.PacketCheck;
 import ac.grim.grimac.player.GrimPlayer;
 import com.github.retrooper.packetevents.event.PacketReceiveEvent;
+import com.github.retrooper.packetevents.event.PacketSendEvent;
 import com.github.retrooper.packetevents.protocol.packettype.PacketType;
 
 import java.util.UUID;
@@ -18,11 +19,28 @@ public class SetBackTimeListener extends Check implements PacketCheck {
         super(player);
     }
     @Override
+    public void onPacketSend(PacketSendEvent event) {
+        if (event.getPacketType() == PacketType.Play.Server.OPEN_WINDOW) {
+            if (player.packetStateData.lastPacket.getPacketType()
+                    == PacketType.Play.Client.USE_ITEM) {
+                player.isUseExemptGui = true;
+            }
+        } else
+        if (event.getPacketType() == PacketType.Play.Server.CLOSE_WINDOW) {
+            player.isUseExemptGui = false;
+        }
+    }
+    @Override
     public void onPacketReceive(PacketReceiveEvent event) {
         if (player.disableGrim) return;
 
         if (!(event.getPacketType() == PacketType.Play.Client.PLAYER_POSITION ||
-                event.getPacketType() == PacketType.Play.Client.PLAYER_POSITION_AND_ROTATION)) return;
+                event.getPacketType() == PacketType.Play.Client.PLAYER_POSITION_AND_ROTATION)) {
+            if (event.getPacketType() == PacketType.Play.Client.CLOSE_WINDOW) {
+                player.isUseExemptGui = false;
+            }
+            return;
+        }
 
         long now = System.nanoTime();
         long unblock = unBlockTime.getOrDefault(player.getUniqueId(),DEFAULT);

@@ -81,9 +81,13 @@ public class CheckManager {
     private final ClassToInstanceMap<BlockBreakCheck> blockBreakChecks;
     private final ClassToInstanceMap<BlockPlaceCheck> blockPlaceChecks;
     private final ClassToInstanceMap<PostPredictionCheck> postPredictionChecks;
+    private final ClassToInstanceMap<DoPacketCheck> doPacketChecks;
     private PacketEntityReplication packetEntityReplication = null;
 
     public CheckManager(GrimPlayer player) {
+        doPacketChecks = new ImmutableClassToInstanceMap.Builder<DoPacketCheck>()
+                .put(BadPacketsAA.class, new BadPacketsAA(player))
+                .build();
         packetChecks = new ImmutableClassToInstanceMap.Builder<PacketCheck>()
                 .put(PacketOrderProcessor.class, player.packetOrderProcessor)
                 .put(Reach.class, new Reach(player))
@@ -130,6 +134,9 @@ public class CheckManager {
                 .put(BadPacketsV.class, new BadPacketsV(player))
                 .put(BadPacketsY.class, new BadPacketsY(player))
                 .put(BadPacketsZ.class, new BadPacketsZ(player))
+                .put(BadPacketsAB.class, new BadPacketsAB(player))
+                .put(BadPacketsAC.class, new BadPacketsAC(player))
+                .put(ac.grim.grimac.checks.impl.exploit.ef.PacketLimiter.class, new ac.grim.grimac.checks.impl.exploit.ef.PacketLimiter(player))
                 .put(InventoryA.class, new InventoryA(player))
                 .put(InventoryB.class, new InventoryB(player))
                 .put(InventoryE.class, new InventoryE(player))
@@ -284,6 +291,7 @@ public class CheckManager {
                 .put(TimerLimit.class, new TimerLimit(player))
                 .put(CrashA.class, new CrashA(player))
                 .put(CrashC.class, new CrashC(player))
+//                .put(AutoTotem.class, new AutoTotem(player)) // server
                 .put(SimulationC.class, new SimulationC(player))
                 .put(VehicleTimer.class, new VehicleTimer(player))
                 .put(Spoofer.class,new Spoofer(player))
@@ -354,9 +362,26 @@ public class CheckManager {
         return (T) blockPlaceChecks.get(check);
     }
 
+    @SuppressWarnings("unchecked")
+    public <T extends DoPacketCheck> T getDoPacketCheck(Class<T> check) {
+        return (T) doPacketChecks.get(check);
+    }
+
     public void onPrePredictionReceivePacket(final PacketReceiveEvent packet) {
         for (PacketCheck check : prePredictionChecks.values()) {
             check.onPacketReceive(packet);
+        }
+    }
+
+    public void onDoPacketReceive(final PacketReceiveEvent event) {
+        for (DoPacketCheck check : doPacketChecks.values()) {
+            check.onPacketReceive(event);
+        }
+    }
+
+    public void onDoPacketSend(final PacketSendEvent event) {
+        for (DoPacketCheck check : doPacketChecks.values()) {
+            check.onPacketSend(event);
         }
     }
 

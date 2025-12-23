@@ -31,6 +31,8 @@ public class PacketStateData {
     public int lastFood;
     public boolean lastServerTransWasValid = false;
     @Getter
+    private boolean wasSlowedByUsingItem = false;
+    @Getter
     private int slowedByUsingItemSlot = Integer.MIN_VALUE;
     public boolean sendingBundlePacket;
 
@@ -38,6 +40,7 @@ public class PacketStateData {
     public boolean horseInteractCausedForcedRotation = false;
 
     public void setSlowedByUsingItem(boolean slowedByUsingItem) {
+        wasSlowedByUsingItem = isSlowedByUsingItem();
         slowedByUsingItemSlot = slowedByUsingItem ? lastSlotSelected : Integer.MIN_VALUE;
     }
 

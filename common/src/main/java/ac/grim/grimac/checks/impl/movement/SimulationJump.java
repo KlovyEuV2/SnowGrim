@@ -33,8 +33,12 @@ public class SimulationJump extends Check implements PostPredictionCheck {
                 || player.predictedVelocity.isExplosion() || player.predictedVelocity.isKnockback()
                 || player.predictedVelocity.isTrident() || !player.predictedVelocity.isJump()) return;
 
-        boolean exempt = player.inVehicle() || BoatUtil.getBoatStep(player.move()) != null;
-        if (player.disableGrim || exempt) return;
+        boolean isExempt = this.player.isClimbing || this.player.wasClimbing || this.player.compensatedWorld.isNearHardEntity(this.player.boundingBox)
+                || this.player.uncertaintyHandler.isStepMovement || this.player.uncertaintyHandler.wasStepMovement ||
+                this.player.packetStateData.lastPacketWasTeleport || this.player.getSetbackTeleportUtil().blockOffsets || this.player.wasGliding != this.player.isGliding
+                ||this.player.inVehicle() || BoatUtil.getBoatStep(player.move()) != null
+                || player.uncertaintyHandler.isSteppingNearBubbleColumn;
+        if (player.disableGrim || isExempt) return;
 
         boolean flagged = false;
 

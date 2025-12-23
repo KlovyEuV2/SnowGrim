@@ -6,6 +6,13 @@
 
 # "セットバック"は、Grimによってプレイヤーの違反が検知された際、プレイヤーを元の位置/状態に戻すことを意味します。
 
+server:
+    host: "127.0.0.1"
+    port: 8080
+    token: ""
+    connection:
+        type: TCP
+
 alerts:
     # アラートを、プレイヤーに送信するだけでなくコンソールにも送信するかどうか。
     print-to-console: true

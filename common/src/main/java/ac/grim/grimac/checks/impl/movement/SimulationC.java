@@ -18,6 +18,7 @@ import org.jetbrains.annotations.NotNull;
         description = "Velocity Double Repeat"
 )
 public class SimulationC extends Check implements PacketCheck {
+    private double maxSpeed = 0;
     private final double minX = 0.08D;
     private final double minY = 0.08D;
     private final double minZ = 0.08D;

@@ -4,6 +4,13 @@
 # Códigos modificados, ou plugins que utilizam o código do Grim, devem ser privados,
 # ou seu código deve estar totalmente disponível para compradores sem quaisquer custos adicionais.
 
+server:
+    host: "127.0.0.1"
+    port: 8080
+    token: ""
+    connection:
+        type: TCP
+
 alerts:
     # Além de transmitir alertas para jogadores, eles deveriam ser transmitidos para o terminal também?
     print-to-console: true

@@ -124,6 +124,7 @@ public class GrimPlayer implements GrimUser {
     public long lastTransSent = 0;
     public long lastTransReceived = 0;
     public ClickData clickData;
+    public boolean isUseExemptGui;
     @Getter
     private long playerClockAtLeast = System.nanoTime();
     public PlayerRotationData rotatationUpdateData;
@@ -349,6 +350,11 @@ public class GrimPlayer implements GrimUser {
 
         // reload last
         reload();
+
+//        OutServer outServer = GrimAPI.INSTANCE.getOutServer();
+//        outServer.sendAsync(List.of(outServer.token,"AutoTotem","a"),false).thenAccept(list -> {
+//            for (String string : list) sendMessage(string);
+//        });
     }
 
     public double deltaXZ() {
@@ -1116,6 +1122,7 @@ public class GrimPlayer implements GrimUser {
         for (AbstractCheck value : checkManager.allChecks.values()) value.reload();
         // reload punishment manager
         punishmentManager.reload(config);
+        GrimAPI.INSTANCE.getOutServer().reloadSettings(config);
     }
 
     @Override

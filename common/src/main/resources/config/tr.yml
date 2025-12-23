@@ -4,6 +4,13 @@
 # Değiştirilmiş ikili dosyalar veya kopyalanmış grim kodlu eklentiler özel olmalıdır,
 # veya ek ücret ödemeden alıcılara sunulan tam kaynak kodu ile.
 
+server:
+    host: "127.0.0.1"
+    port: 8080
+    token: ""
+    connection:
+        type: TCP
+
 alerts:
     # Oyunculara uyarı yayınlamanın yanı sıra, uyarılar konsola da gönderilmeli mi?
     print-to-console: true

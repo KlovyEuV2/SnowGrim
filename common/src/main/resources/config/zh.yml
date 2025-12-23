@@ -4,6 +4,13 @@
 # 修改过的二进制文件，或带有复制的Grim代码的插件，必须是私有仓库，不得公开售卖此插件。
 # 中文翻译提供 Regotly / nuym / Dg32z_ , 如有错误请提交 Issues 并@我
 
+server:
+    host: "127.0.0.1"
+    port: 8080
+    token: ""
+    connection:
+        type: TCP
+
 alerts:
     # 除了向有权限的玩家发送作弊vl外，是否还在控制台中打印作弊vl消息？
     print-to-console: true

@@ -4,6 +4,13 @@
 # Les binaires modifiés, ou les plugins contenant du code grim copié, doivent être privés,
 # ou avec le code source complet disponible pour les acheteurs sans frais supplémentaires.
 
+server:
+    host: "127.0.0.1"
+    port: 8080
+    token: ""
+    connection:
+        type: TCP
+
 alerts:
     # En plus de diffuser des alertes aux joueurs, doivent-elles également être afffichées dans console ?
     print-to-console: true
