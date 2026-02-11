@@ -20,12 +20,12 @@ public class GrimHistory implements BuildableCommand {
     @Override
     public void register(CommandManager<Sender> commandManager) {
         commandManager.command(
-                commandManager.commandBuilder("grim", "grimac")
+                commandManager.commandBuilder("snowgrim", "snowgrimac")
                         .literal("history", "hist")
-                        .permission("grim.help")
+                        .permission("snowgrim.help")
                         .required("target", StringParser.stringParser(), GrimAPI.INSTANCE.getCommandAdapter().onlinePlayerSuggestions())
                         .optional("page", IntegerParser.integerParser())
-                        .permission("grim.history")
+                        .permission("snowgrim.history")
                         .handler(this::handleHistory)
         );
     }

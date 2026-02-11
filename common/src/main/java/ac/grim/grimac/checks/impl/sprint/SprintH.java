@@ -3,16 +3,18 @@ package ac.grim.grimac.checks.impl.sprint;
 import ac.grim.grimac.api.config.ConfigManager;
 import ac.grim.grimac.checks.Check;
 import ac.grim.grimac.checks.CheckData;
-import ac.grim.grimac.checks.type.PacketCheck;
+import ac.grim.grimac.checks.type.PostPredictionCheck;
 import ac.grim.grimac.player.GrimPlayer;
+import ac.grim.grimac.utils.anticheat.TicksUtil;
 import ac.grim.grimac.utils.collisions.FluidUtil;
 import ac.grim.grimac.utils.collisions.IceUtil;
 import com.github.retrooper.packetevents.event.PacketReceiveEvent;
 import com.github.retrooper.packetevents.protocol.packettype.PacketType;
+import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientEntityAction;
 import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientInteractEntity;
 
 @CheckData(name = "SprintH", description = "Sprint spoof simulation reset", setback = 0)
-public class SprintH extends Check implements PacketCheck {
+public class SprintH extends Check implements PostPredictionCheck {
 
     public static class Buffer {
         public boolean enabled;
@@ -74,7 +76,8 @@ public class SprintH extends Check implements PacketCheck {
             WrapperPlayClientInteractEntity packet = new WrapperPlayClientInteractEntity(event);
             if (packet.getAction() != WrapperPlayClientInteractEntity.InteractAction.ATTACK) return;
 
-            if (player.isSprinting || IceUtil.isOnIce(player) || FluidUtil.isInFluid(player) || player.inVehicle()) {
+            if (player.isSprinting || IceUtil.isOnIce(player) || FluidUtil.isInFluid(player) || player.inVehicle()
+                    || TicksUtil.getTick(player, PacketType.Play.Client.ENTITY_ACTION, WrapperPlayClientEntityAction.Action.STOP_SPRINTING) != (player.tick -1)) {
                 if (buffer.enabled) buffer.remove();
                 shouldCheck = false;
                 return;
@@ -87,16 +90,13 @@ public class SprintH extends Check implements PacketCheck {
 
         if (event.getPacketType() == PacketType.Play.Client.PLAYER_POSITION || event.getPacketType() == PacketType.Play.Client.PLAYER_POSITION_AND_ROTATION) {
             if (shouldCheck) {
+                if (player.predictedVelocity.isKnockback() || player.predictedVelocity.isTrident()
+                        || player.predictedVelocity.isExplosion()) {
+                    shouldCheck = false;
+                    return;
+                }
                 checkSprint();
                 shouldCheck = false;
-            }
-
-            if (ticksSinceAttack >= 0) {
-                ticksSinceAttack++;
-                if (ticksSinceAttack > 5) {
-                    shouldCheck = false;
-                    ticksSinceAttack = -1;
-                }
             }
         }
     }
@@ -104,7 +104,9 @@ public class SprintH extends Check implements PacketCheck {
     private void checkSprint() {
         if (player.isJumping) return;
 
-        boolean suspicious = player.isSprinting && player.isSprintSimulation();
+        boolean suspicious = player.isSprinting && player.isSprintSimulation()
+                && TicksUtil.getTick(player, PacketType.Play.Client.ENTITY_ACTION, WrapperPlayClientEntityAction.Action.STOP_SPRINTING) == (player.tick -2)
+                && TicksUtil.getTick(player, PacketType.Play.Client.ENTITY_ACTION, WrapperPlayClientEntityAction.Action.START_SPRINTING) == (player.tick -1);
 
         if (suspicious) {
             if (buffer.enabled) {

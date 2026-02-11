@@ -396,6 +396,25 @@ public class CheckManagerListener extends PacketListenerAbstract {
             return;
         }
 
+        if (event.getPacketType() == PacketType.Play.Client.PLAYER_POSITION || event.getPacketType() == PacketType.Play.Client.PLAYER_POSITION_AND_ROTATION
+                || event.getPacketType() == PacketType.Play.Client.PLAYER_ROTATION) {
+            player.tick++;
+        }
+
+        if (event.getPacketType() == PacketType.Play.Client.ENTITY_ACTION) {
+            WrapperPlayClientEntityAction wrapper = new WrapperPlayClientEntityAction(event);
+
+            String key = event.getPacketType().getName() + ";" + wrapper.getAction().name();
+            player.ticks.put(key, player.tick);
+        } else if (event.getPacketType() == PacketType.Play.Client.INTERACT_ENTITY) {
+            if (event.getPacketType() == PacketType.Play.Client.ENTITY_ACTION) {
+                WrapperPlayClientInteractEntity wrapper = new WrapperPlayClientInteractEntity(event);
+
+                String key = event.getPacketType().getName() + ";" + wrapper.getAction().name();
+                player.ticks.put(key, player.tick);
+            }
+        }
+
         // Determine if teleport BEFORE we call the pre-prediction vehicle
         if (event.getPacketType() == PacketType.Play.Client.VEHICLE_MOVE) {
             WrapperPlayClientVehicleMove move = new WrapperPlayClientVehicleMove(event);

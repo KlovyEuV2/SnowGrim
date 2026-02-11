@@ -4,6 +4,7 @@ import ac.grim.grimac.GrimAPI;
 import ac.grim.grimac.api.AbstractCheck;
 import ac.grim.grimac.api.npcs.checks.aim.NpcAura;
 import ac.grim.grimac.api.npcs.checks.move.NpcPacketListener;
+import ac.grim.grimac.checks.Check;
 import ac.grim.grimac.checks.debug.HitboxDebugHandler;
 import ac.grim.grimac.checks.impl.aim.*;
 import ac.grim.grimac.checks.impl.aim.aimassist.*;
@@ -237,8 +238,8 @@ public class CheckManager {
                 .put(BadPacketsX.class, new BadPacketsX(player))
                 .put(NoSlow.class, new NoSlow(player))
                 .put(SimulationJump.class, new SimulationJump(player))
-                .put(ElytraOffset.class, new ElytraOffset(player))
-                // .put(FlyingOffset.class,new FlyingOffset(player))
+                //.put(ElytraOffset.class, new ElytraOffset(player))
+                .put(FlyingOffset.class,new FlyingOffset(player))
                 .put(ElytraN.class,new ElytraN(player))
 //                .put(SimulationB.class, new SimulationB(player))
                 .put(SprintB.class, new SprintB(player))
@@ -249,7 +250,7 @@ public class CheckManager {
                 .put(SprintG.class, new SprintG(player))
                 .put(MultiInteractA.class, new MultiInteractA(player))
                 .put(MultiInteractB.class, new MultiInteractB(player))
-                .put(ElytraA.class, new ElytraA(player))
+//                .put(ElytraA.class, new ElytraA(player))
                 .put(ElytraB.class, new ElytraB(player))
                 .put(ElytraC.class, new ElytraC(player))
                 .put(ElytraD.class, new ElytraD(player))
@@ -292,7 +293,7 @@ public class CheckManager {
                 .put(CrashA.class, new CrashA(player))
                 .put(CrashC.class, new CrashC(player))
 //                .put(AutoTotem.class, new AutoTotem(player)) // server
-                .put(SimulationC.class, new SimulationC(player))
+//                .put(SimulationC.class, new SimulationC(player))
                 .put(VehicleTimer.class, new VehicleTimer(player))
                 .put(Spoofer.class,new Spoofer(player))
                 .put(ServerHider.class, new ServerHider(player))
@@ -369,114 +370,139 @@ public class CheckManager {
 
     public void onPrePredictionReceivePacket(final PacketReceiveEvent packet) {
         for (PacketCheck check : prePredictionChecks.values()) {
+            if (check instanceof Check && !((Check) check).isEnable()) continue;
             check.onPacketReceive(packet);
         }
     }
 
     public void onDoPacketReceive(final PacketReceiveEvent event) {
         for (DoPacketCheck check : doPacketChecks.values()) {
+            if (check instanceof Check && !((Check) check).isEnable()) continue;
             check.onPacketReceive(event);
         }
     }
 
     public void onDoPacketSend(final PacketSendEvent event) {
         for (DoPacketCheck check : doPacketChecks.values()) {
+            if (check instanceof Check && !((Check) check).isEnable()) continue;
             check.onPacketSend(event);
         }
     }
 
     public void onPacketReceive(final PacketReceiveEvent packet) {
         for (PacketCheck check : packetChecks.values()) {
+            if (check instanceof Check && !((Check) check).isEnable()) continue;
             check.onPacketReceive(packet);
         }
         for (PostPredictionCheck check : postPredictionChecks.values()) {
+            if (check instanceof Check && !((Check) check).isEnable()) continue;
             check.onPacketReceive(packet);
         }
         for (BlockPlaceCheck check : blockPlaceChecks.values()) {
+            if (!check.isEnable()) continue;
             check.onPacketReceive(packet);
         }
         for (BlockBreakCheck check : blockBreakChecks.values()) {
+            if (check instanceof Check && !((Check) check).isEnable()) continue;
             check.onPacketReceive(packet);
         }
     }
 
     public void onPacketSend(final PacketSendEvent packet) {
         for (PacketCheck check : prePredictionChecks.values()) {
+            if (check instanceof Check && !((Check) check).isEnable()) continue;
             check.onPacketSend(packet);
         }
         for (PacketCheck check : packetChecks.values()) {
+            if (check instanceof Check && !((Check) check).isEnable()) continue;
             check.onPacketSend(packet);
         }
         for (PostPredictionCheck check : postPredictionChecks.values()) {
+            if (check instanceof Check && !((Check) check).isEnable()) continue;
             check.onPacketSend(packet);
         }
         for (BlockPlaceCheck check : blockPlaceChecks.values()) {
+            if (check instanceof Check && !((Check) check).isEnable()) continue;
             check.onPacketSend(packet);
         }
         for (BlockBreakCheck check : blockBreakChecks.values()) {
+            if (check instanceof Check && !((Check) check).isEnable()) continue;
             check.onPacketSend(packet);
         }
     }
 
     public void onPositionUpdate(final PositionUpdate position) {
         for (PositionCheck check : positionChecks.values()) {
+            if (check instanceof Check && !((Check) check).isEnable()) continue;
             check.onPositionUpdate(position);
         }
     }
 
     public void onRotationUpdate(final RotationUpdate rotation) {
         for (RotationCheck check : rotationChecks.values()) {
+            if (check instanceof Check && !((Check) check).isEnable()) continue;
             check.process(rotation);
         }
         for (BlockPlaceCheck check : blockPlaceChecks.values()) {
+            if (check instanceof Check && !((Check) check).isEnable()) continue;
             check.process(rotation);
         }
     }
 
     public void onVehiclePositionUpdate(final VehiclePositionUpdate update) {
         for (VehicleCheck check : vehicleChecks.values()) {
+            if (check instanceof Check && !((Check) check).isEnable()) continue;
             check.process(update);
         }
     }
 
     public void onPredictionFinish(final PredictionComplete complete) {
         for (PostPredictionCheck check : postPredictionChecks.values()) {
+            if (check instanceof Check && !((Check) check).isEnable()) continue;
             check.onPredictionComplete(complete);
         }
         for (BlockPlaceCheck check : blockPlaceChecks.values()) {
+            if (check instanceof Check && !((Check) check).isEnable()) continue;
             check.onPredictionComplete(complete);
         }
         for (BlockBreakCheck check : blockBreakChecks.values()) {
+            if (check instanceof Check && !((Check) check).isEnable()) continue;
             check.onPredictionComplete(complete);
         }
     }
 
     public void onBlockPlace(final BlockPlace place) {
         for (BlockPlaceCheck check : blockPlaceChecks.values()) {
+            if (check instanceof Check && !((Check) check).isEnable()) continue;
             check.onBlockPlace(place);
         }
     }
 
     public void onPostFlyingBlockPlace(final BlockPlace place) {
         for (BlockPlaceCheck check : blockPlaceChecks.values()) {
+            if (check instanceof Check && !((Check) check).isEnable()) continue;
             check.onPostFlyingBlockPlace(place);
         }
     }
 
     public void onBlockBreak(final BlockBreak blockBreak) {
         for (BlockBreakCheck check : blockBreakChecks.values()) {
+            if (check instanceof Check && !((Check) check).isEnable()) continue;
             check.onBlockBreak(blockBreak);
         }
         for (BlockPlaceCheck check : blockPlaceChecks.values()) {
+            if (check instanceof Check && !((Check) check).isEnable()) continue;
             check.onBlockBreak(blockBreak);
         }
     }
 
     public void onPostFlyingBlockBreak(final BlockBreak blockBreak) {
         for (BlockBreakCheck check : blockBreakChecks.values()) {
+            if (check instanceof Check && !((Check) check).isEnable()) continue;
             check.onPostFlyingBlockBreak(blockBreak);
         }
         for (BlockPlaceCheck check : blockPlaceChecks.values()) {
+            if (check instanceof Check && !((Check) check).isEnable()) continue;
             check.onPostFlyingBlockBreak(blockBreak);
         }
     }
@@ -539,9 +565,9 @@ public class CheckManager {
         inited = true;
 
         final String[] permissions = {
-                "grim.exempt.",
-                "grim.nosetback.",
-                "grim.nomodifypacket.",
+                "snowgrim.exempt.",
+                "snowgrim.nosetback.",
+                "snowgrim.nomodifypacket.",
         };
 
         for (final AbstractCheck check : allChecks.values()) {

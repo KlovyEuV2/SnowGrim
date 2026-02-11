@@ -18,9 +18,9 @@ public class GrimSetBack implements BuildableCommand {
     @Override
     public void register(CommandManager<Sender> commandManager) {
         commandManager.command(
-                commandManager.commandBuilder("grim", "grimac")
+                commandManager.commandBuilder("snowgrim", "snowgrimac")
                         .literal("setback")
-                        .permission("grim.setback")
+                        .permission("snowgrim.setback")
                         .required("target", GrimAPI.INSTANCE.getCommandAdapter().singlePlayerSelectorParser())
                         .required("time", LongParser.longParser())
                         .handler(this::handleSpectate)

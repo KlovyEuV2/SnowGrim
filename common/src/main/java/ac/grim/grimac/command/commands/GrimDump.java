@@ -31,9 +31,9 @@ public class GrimDump implements BuildableCommand {
     @Override
     public void register(CommandManager<Sender> commandManager) {
         commandManager.command(
-                commandManager.commandBuilder("grim", "grimac")
+                commandManager.commandBuilder("snowgrim", "snowgrimac")
                         .literal("dump", Description.of("Generate a debug dump"))
-                        .permission("grim.dump")
+                        .permission("snowgrim.dump")
                         .handler(this::handleDump)
         );
     }
@@ -58,7 +58,7 @@ public class GrimDump implements BuildableCommand {
         // versions
         JsonObject versions = new JsonObject();
         base.add("versions", versions);
-        versions.addProperty("grim", GrimAPI.INSTANCE.getExternalAPI().getGrimVersion());
+        versions.addProperty("snowgrim", GrimAPI.INSTANCE.getExternalAPI().getGrimVersion());
         versions.addProperty("packetevents", PacketEvents.getAPI().getVersion().toString());
         versions.addProperty("server", PacketEvents.getAPI().getServerManager().getVersion().getReleaseName());
         versions.addProperty("implementation", GrimAPI.INSTANCE.getPlatformServer().getPlatformImplementationString());

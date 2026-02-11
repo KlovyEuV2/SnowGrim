@@ -14,9 +14,9 @@ public class GrimSendAlert implements BuildableCommand {
     @Override
     public void register(CommandManager<Sender> commandManager) {
         commandManager.command(
-                commandManager.commandBuilder("grim", "grimac")
+                commandManager.commandBuilder("snowgrim", "snowgrimac")
                         .literal("sendalert")
-                        .permission("grim.sendalert")
+                        .permission("snowgrim.sendalert")
                         .required("message", StringParser.greedyStringParser())
                         .handler(this::handleSendAlert)
         );

@@ -37,6 +37,8 @@ import ac.grim.grimac.outserver.*;
 public final class GrimAPI {
     public static final GrimAPI INSTANCE = new GrimAPI();
 
+    public static final boolean DEV_MODE = true;
+
     @Getter
     private final Platform platform = detectPlatform();
     private final BaseConfigManager configManager;

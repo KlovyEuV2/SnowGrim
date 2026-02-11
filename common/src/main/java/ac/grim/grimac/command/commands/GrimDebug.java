@@ -21,25 +21,25 @@ import org.jetbrains.annotations.Nullable;
 public class GrimDebug implements BuildableCommand {
 
     public void register(CommandManager<Sender> commandManager) {
-        Command.Builder<Sender> grimCommand = commandManager.commandBuilder("grim", "grimac");
+        Command.Builder<Sender> grimCommand = commandManager.commandBuilder("snowgrim", "snowgrimac");
 
         // Register "debug" subcommand
         Command.Builder<Sender> debugCommand = grimCommand
                 .literal("debug", Description.of("Toggle debug output for a player"))
-                .permission("grim.debug")
+                .permission("snowgrim.debug")
                 .optional("target", GrimAPI.INSTANCE.getCommandAdapter().singlePlayerSelectorParser())
                 .handler(this::handleDebug);
 
         // Register "consoledebug" subcommand
         Command.Builder<Sender> consoleDebugCommand = grimCommand
                 .literal("consoledebug", Description.of("Toggle console debug output for a player"))
-                .permission("grim.consoledebug")
+                .permission("snowgrim.consoledebug")
                 .required("target", GrimAPI.INSTANCE.getCommandAdapter().singlePlayerSelectorParser())
                 .handler(this::handleConsoleDebug);
 
         Command.Builder<Sender> hitboxDebugCommand = grimCommand
                 .literal("hitboxdebug", Description.of("Toggle hitbox debug visualization"))
-                .permission("grim.hitboxdebug")
+                .permission("snowgrim.hitboxdebug")
                 .optional("target", GrimAPI.INSTANCE.getCommandAdapter().singlePlayerSelectorParser(), Description.of("Player to debug (defaults to self if sender is player)"))
                 .handler(this::handleHitboxDebug);
 

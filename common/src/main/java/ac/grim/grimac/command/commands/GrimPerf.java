@@ -12,11 +12,11 @@ import org.jetbrains.annotations.NotNull;
 public class GrimPerf {
 
     public void register(CommandManager<Sender> commandManager) {
-        Command.Builder<Sender> grimCommand = commandManager.commandBuilder("grim", "grimac");
+        Command.Builder<Sender> grimCommand = commandManager.commandBuilder("snowgrim", "snowgrimac");
 
         Command.Builder<Sender> configuredBuilder = grimCommand
                 .literal("perf", "performance")
-                .permission("grim.performance")
+                .permission("snowgrim.performance")
                 .handler(this::handlePerformance);
 
         commandManager.command(configuredBuilder);

@@ -19,9 +19,9 @@ public class GrimSpectate implements BuildableCommand {
     @Override
     public void register(CommandManager<Sender> commandManager) {
         commandManager.command(
-                commandManager.commandBuilder("grim", "grimac")
+                commandManager.commandBuilder("snowgrim", "snowgrimac")
                         .literal("spectate")
-                        .permission("grim.spectate")
+                        .permission("snowgrim.spectate")
                         .required("target", GrimAPI.INSTANCE.getCommandAdapter().singlePlayerSelectorParser())
                         .handler(this::handleSpectate)
                         .apply(CommandRegister.REQUIREMENT_FACTORY.create(PlayerSenderRequirement.PLAYER_SENDER_REQUIREMENT))

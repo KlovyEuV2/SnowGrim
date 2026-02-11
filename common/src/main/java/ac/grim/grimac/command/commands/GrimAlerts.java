@@ -14,9 +14,9 @@ public class GrimAlerts implements BuildableCommand {
     @Override
     public void register(CommandManager<Sender> commandManager) {
         commandManager.command(
-                commandManager.commandBuilder("grim", "grimac")
+                commandManager.commandBuilder("snowgrim", "snowgrimac")
                         .literal("alerts", Description.of("Toggle alerts for the sender"))
-                        .permission("grim.alerts")
+                        .permission("snowgrim.alerts")
                         .handler(this::handleAlerts)
         );
     }

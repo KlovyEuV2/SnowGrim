@@ -18,7 +18,7 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
 
     @Override
     public @NotNull String getIdentifier() {
-        return "grim";
+        return "snowgrim";
     }
 
     public @NotNull String getAuthor() {

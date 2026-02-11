@@ -29,9 +29,9 @@ public class GrimList implements BuildableCommand {
 
     @Override
     public void register(CommandManager<Sender> commandManager) {
-        commandManager.command(commandManager.commandBuilder("grim", "grimac")
+        commandManager.command(commandManager.commandBuilder("snowgrim", "snowgrimac")
                 .literal("list")
-                .permission("grim.list")
+                .permission("snowgrim.list")
                 .required("list", StringParser.stringParser(), SUGGESTIONS)
                 .handler(commandContext -> handleList(commandContext.sender(), commandContext.getOrDefault("list", "?").toLowerCase()))
                 .build());

@@ -13,9 +13,9 @@ public class GrimReload implements BuildableCommand {
     @Override
     public void register(CommandManager<Sender> commandManager) {
         commandManager.command(
-                commandManager.commandBuilder("grim", "grimac")
+                commandManager.commandBuilder("snowgrim", "snowgrimac")
                         .literal("reload")
-                        .permission("grim.reload")
+                        .permission("snowgrim.reload")
                         .handler(this::handleReload)
         );
     }

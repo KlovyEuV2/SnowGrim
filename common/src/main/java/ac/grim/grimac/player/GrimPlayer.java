@@ -176,6 +176,7 @@ public class GrimPlayer implements GrimUser {
     public boolean isGliding;
     public boolean wasGliding;
     public boolean isRiptidePose = false;
+    public boolean hasBukkitInventoryOpen;
     public double fallDistance;
     public SimpleCollisionBox boundingBox = GetBoundingBox.getBoundingBoxFromPosAndSizeRaw(x, y, z, 0.6f, 1.8f);
     public Pose pose = Pose.STANDING;
@@ -187,7 +188,7 @@ public class GrimPlayer implements GrimUser {
     public int food = 20;
     public float depthStriderLevel;
     public float sneakingSpeedMultiplier = 0.3f;
-    public float flySpeed;
+    public float flySpeed = Integer.MAX_VALUE;
     public float bukkiFlySpeed = Float.MAX_VALUE;
     public final VehicleData vehicleData = new VehicleData();
     // The client claims this
@@ -259,6 +260,8 @@ public class GrimPlayer implements GrimUser {
     @Getter @Setter private ResyncHandler resyncHandler = new DefaultResyncHandler(this);
     @Getter private final FeatureManagerImpl featureManager = new FeatureManagerImpl(this);
     public boolean serverOpenedInventoryThisTick;
+    public long tick = 0;
+    public ConcurrentHashMap<String, Long> ticks = new ConcurrentHashMap<>();
     // start config
     private boolean debugPacketCancel = false;
     private int spamThreshold = 100;
@@ -408,6 +411,7 @@ public class GrimPlayer implements GrimUser {
             set.add(new VectorData(likelyKB.vector.clone(), VectorData.VectorType.Knockback));
         }
 
+        set.addAll(getPossibleVelocitiesMinusKnockback());
         set.addAll(getPossibleVelocitiesMinusKnockback());
         return set;
     }
@@ -779,8 +783,8 @@ public class GrimPlayer implements GrimUser {
         if (platformPlayer == null) return;
         try {
             GrimAPI.INSTANCE.getScheduler().getEntityScheduler().execute(platformPlayer, GrimAPI.INSTANCE.getGrimPlugin(), () -> {
-                this.noModifyPacketPermission = platformPlayer.hasPermission("grim.nomodifypacket");
-                this.noSetbackPermission = platformPlayer.hasPermission("grim.nosetback");
+                this.noModifyPacketPermission = platformPlayer.hasPermission("snowgrim.nomodifypacket");
+                this.noSetbackPermission = platformPlayer.hasPermission("snowgrim.nosetback");
                 for (AbstractCheck check : checkManager.allChecks.values()) {
                     if (check instanceof Check c) {
                         c.updatePermissions();

@@ -554,11 +554,11 @@ public class GrimMath {
         switch (type) {
             case Y_UP ->
             {
-                speed = 0.4201;
+                speed = 0.41999998688697815;
                 if (player.compensatedEntities.self.hasPotionEffect(PotionTypes.JUMP_BOOST)) {
                     OptionalInt level = player.compensatedEntities.self.getPotionEffectLevel(PotionTypes.JUMP_BOOST);
                     if (level.isPresent()) {
-                        speed *= (1 + (level.getAsInt() + 1) * 0.2501);
+                        speed *= (1 + (level.getAsInt() + 1) * 0.2518);
                     }
                 }
                 return speed;

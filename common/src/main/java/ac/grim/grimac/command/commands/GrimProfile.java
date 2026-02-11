@@ -18,9 +18,9 @@ public class GrimProfile implements BuildableCommand {
     @Override
     public void register(CommandManager<Sender> commandManager) {
         commandManager.command(
-                commandManager.commandBuilder("grim", "grimac")
+                commandManager.commandBuilder("snowgrim", "snowgrimac")
                         .literal("profile")
-                        .permission("grim.profile")
+                        .permission("snowgrim.profile")
                         .required("target", GrimAPI.INSTANCE.getCommandAdapter().singlePlayerSelectorParser())
                         .handler(this::handleProfile)
         );

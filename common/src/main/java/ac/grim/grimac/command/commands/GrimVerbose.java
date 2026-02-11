@@ -11,9 +11,9 @@ public class GrimVerbose implements BuildableCommand {
     @Override
     public void register(CommandManager<Sender> commandManager) {
         commandManager.command(
-                commandManager.commandBuilder("grim", "grimac")
+                commandManager.commandBuilder("snowgrim", "snowgrimac")
                         .literal("verbose")
-                        .permission("grim.verbose")
+                        .permission("snowgrim.verbose")
                         .handler(this::handleVerbose)
         );
     }

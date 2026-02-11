@@ -39,6 +39,7 @@ public class OffsetHandler extends Check implements PostPredictionCheck {
 
         if (completePredictionEvent.isCancelled()) return;
 
+//        player.sendMessage("x(" + player.deltaX() + "), z(" + player.deltaZ() + ", y(" + player.deltaY() + ")");
         if ((offset >= threshold || offset >= immediateSetbackThreshold)) {
             advantageGained += offset;
             giveOffsetLenienceNextTick(offset);
@@ -58,7 +59,9 @@ public class OffsetHandler extends Check implements PostPredictionCheck {
                     humanFormattedOffset = humanFormattedOffset.replace("0.", ".");
                 }
 
-                String verbose = humanFormattedOffset + ", x=" + String.format("%.4f",player.deltaX()) + ", y=" + String.format("%.4f",player.deltaY()) + ", z=" + String.format("%.4f",player.deltaZ()) + " /gl " + flagId;
+                String verbose = humanFormattedOffset + ", x=" + (!GrimAPI.DEV_MODE ?
+                        String.format("%.4f",player.deltaX()) + ", y=" + String.format("%.4f",player.deltaY()) + ", z=" + String.format("%.4f",player.deltaZ()) + " /gl " + flagId :
+                        player.deltaX() + ", y=" + player.deltaY() + ", z=" + player.deltaZ() + " /gl " + flagId);
                 if (flag(verbose)) {
                     if (alert(verbose)) {
                         flags.incrementAndGet(); // This debug was sent somewhere

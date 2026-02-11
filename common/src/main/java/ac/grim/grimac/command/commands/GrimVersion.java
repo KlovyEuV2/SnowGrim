@@ -138,9 +138,9 @@ public class GrimVersion implements BuildableCommand {
     @Override
     public void register(CommandManager<Sender> commandManager) {
         commandManager.command(
-                commandManager.commandBuilder("grim", "grimac")
+                commandManager.commandBuilder("snowgrim", "snowgrimac")
                         .literal("version")
-                        .permission("grim.version")
+                        .permission("snowgrim.version")
                         .handler(this::handleVersion)
         );
     }

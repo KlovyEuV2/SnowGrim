@@ -18,9 +18,9 @@ public class GrimNpc implements BuildableCommand {
     @Override
     public void register(CommandManager<Sender> commandManager) {
         commandManager.command(
-                commandManager.commandBuilder("grim", "grimac")
+                commandManager.commandBuilder("snowgrim", "snowgrimac")
                         .literal("npc")
-                        .permission("grim.npc")
+                        .permission("snowgrim.npc")
                         .required("target", GrimAPI.INSTANCE.getCommandAdapter().singlePlayerSelectorParser())
                         .handler(this::handleProfile)
         );

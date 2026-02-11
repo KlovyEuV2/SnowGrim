@@ -40,6 +40,7 @@ public class Check extends GrimProcessor implements AbstractCheck {
     private boolean noModifyPacketPermission;
     private long lastViolationTime;
     private double maxBuffer;
+    private @Getter boolean enable;
 
     public Check(final @NotNull GrimPlayer player) {
         this.player = Objects.requireNonNull(player);
@@ -73,9 +74,9 @@ public class Check extends GrimProcessor implements AbstractCheck {
     public final void updatePermissions() {
         if (configName == null || player.platformPlayer == null) return;
         final String id = configName.toLowerCase();
-        exemptPermission = player.platformPlayer.hasPermission("grim.exempt." + id);
-        noSetbackPermission = player.platformPlayer.hasPermission("grim.nosetback." + id);
-        noModifyPacketPermission = player.platformPlayer.hasPermission("grim.nomodifypacket." + id);
+        exemptPermission = player.platformPlayer.hasPermission("snowgrim.exempt." + id);
+        noSetbackPermission = player.platformPlayer.hasPermission("snowgrim.nosetback." + id);
+        noModifyPacketPermission = player.platformPlayer.hasPermission("snowgrim.nomodifypacket." + id);
     }
 
     public final boolean flagAndAlert(String verbose) {
@@ -144,6 +145,7 @@ public class Check extends GrimProcessor implements AbstractCheck {
 
     @Override
     public void reload(ConfigManager configuration) {
+        enable = configuration.getBooleanElse(configName + ".enabled", true);
         decay = configuration.getDoubleElse(configName + ".decay", decay);
         setbackVL = configuration.getDoubleElse(configName + ".setbackvl", setbackVL);
         displayName = configuration.getStringElse(configName + ".displayname", checkName);

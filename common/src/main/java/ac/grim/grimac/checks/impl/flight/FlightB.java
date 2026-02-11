@@ -59,6 +59,7 @@ public class FlightB extends Check implements PacketCheck {
         Optional<ValuedAttribute> flyingAttr = player.compensatedEntities.self.getAttribute(Attributes.GENERIC_FLYING_SPEED);
         double attributeSpeed = (flyingAttr != null && flyingAttr.isPresent()) ? flyingAttr.get().get() : 0.0;
         double flySpeed = player.bukkiFlySpeed != Float.MAX_VALUE ? player.bukkiFlySpeed : player.flySpeed;
+        if (player.flySpeed == Integer.MAX_VALUE) flySpeed = 1.0;
         double base = 1.2;
         if ((flyingAttr != null && flyingAttr.isPresent()) || player.gamemode.equals(GameMode.SPECTATOR)) {
             return Integer.MAX_VALUE;

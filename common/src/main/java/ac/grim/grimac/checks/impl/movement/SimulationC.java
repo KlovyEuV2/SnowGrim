@@ -37,11 +37,11 @@ public class SimulationC extends Check implements PacketCheck {
     public void onPacketReceive(PacketReceiveEvent event) {
         PacketTypeCommon packetType = event.getPacketType();
         boolean isExempt = this.player.isClimbing || this.player.wasClimbing || this.player.compensatedWorld.isNearHardEntity(this.player.boundingBox)
-                || this.player.uncertaintyHandler.isStepMovement || this.player.uncertaintyHandler.wasStepMovement || this.player.uncertaintyHandler.isSteppingNearShulker
+                || this.player.uncertaintyHandler.isStepMovement || this.player.uncertaintyHandler.wasStepMovement
                 || this.player.wasTouchingWater || this.player.wasWasTouchingWater || this.player.packetStateData.lastPacketWasTeleport || this.player.onGround
                 || this.player.getSetbackTeleportUtil().blockOffsets || this.player.wasGliding != this.player.isGliding || this.player.wasTouchingLava
                 || this.player.wasWasTouchingLava || this.player.inVehicle();
-        if (!this.player.disableGrim && !event.isCancelled() && !isExempt) {
+        if (!this.player.disableGrim && !isExempt) {
             if (packetType.equals(PacketType.Play.Client.PLAYER_POSITION) || packetType.equals(PacketType.Play.Client.PLAYER_POSITION_AND_ROTATION)) {
                 if (this.consecutiveViolations > VIOLATION_THRESHOLD) {
                     this.consecutiveViolations = VIOLATION_THRESHOLD;

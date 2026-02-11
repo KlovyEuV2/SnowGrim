@@ -9,6 +9,7 @@ import ac.grim.grimac.api.npcs.enums.RandomMode;
 import ac.grim.grimac.api.npcs.enums.RotationMode;
 import ac.grim.grimac.api.npcs.name.NPCNameManager;
 import ac.grim.grimac.checks.Check;
+import ac.grim.grimac.checks.impl.misc.MetadataIndex;
 import ac.grim.grimac.player.GrimPlayer;
 import com.github.retrooper.packetevents.PacketEvents;
 import com.github.retrooper.packetevents.manager.server.ServerVersion;
@@ -26,7 +27,6 @@ import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
 
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -161,10 +161,6 @@ public class NpcManager {
         }
     }
 
-    public static UUID getOfflineUUID(String playerName) {
-        return UUID.nameUUIDFromBytes(("OfflinePlayer:" + playerName).getBytes(StandardCharsets.UTF_8));
-    }
-
     private static boolean isPlayerOnline(String name) {
         try {
             for (GrimPlayer gp : GrimAPI.INSTANCE.getPlayerDataManager().getEntries()) {
@@ -201,7 +197,7 @@ public class NpcManager {
             boolean shouldManageTab = !isPlayerOnline(name);
 
             if (shouldManageTab) {
-                addPlayerToTabListWithPing(player, uuid, name);
+                addPlayerToTab(player, uuid, name);
             }
 
             TrackedNpc trackedNpc = new TrackedNpc(entityId, uuid, name, now, livetime, shouldManageTab);
@@ -235,13 +231,8 @@ public class NpcManager {
             Location spawnLoc = new Location(npc.currentPosition.x, npc.currentPosition.y, npc.currentPosition.z, npc.currentYaw, 0);
             spawnPlayerEntity(player, npc.entityId, npc.uuid, spawnLoc);
             rotateHead(player, npc.entityId, spawnLoc);
-
-            npc.health = 1 + ThreadLocalRandom.current().nextFloat() * 19;
-
-            sendNpcMetadata(player, npc, npc.entityId, npc.health);
+            sendNpcMetadata(player, npc, npc.entityId, 20.0f);
             sendVirtualizedArmor(player, npc, npc.entityId);
-            sendAttributes(player, npc);
-
             npc.spawnTaskPending = false;
             return;
         }
@@ -344,71 +335,80 @@ public class NpcManager {
     private static void sendNpcMetadata(@NotNull GrimPlayer player, TrackedNpc npc, int entityId, float health) {
         try {
             List<EntityData<?>> metadata = new ArrayList<>();
-            GrimPlayer sourcePlayer = npc.copying;
 
-            if (sourcePlayer != null && sourcePlayer.lastMetadata != null) {
-                metadata.addAll(sourcePlayer.lastMetadata);
-                metadata.removeIf(data -> data.getIndex() == 8);
-                metadata.add(new EntityData<>(8, EntityDataTypes.FLOAT, health));
-            } else {
-                metadata.add(new EntityData<>(0, EntityDataTypes.BYTE, (byte) 0));
-                metadata.add(new EntityData<>(8, EntityDataTypes.FLOAT, health));
-            }
+            int healthIdx = MetadataIndex.HEALTH;
+            int skinIdx = isModernVersion ? 17 : 16;
+
+            metadata.add(new EntityData<>(0, EntityDataTypes.BYTE, (byte) 0));
+            metadata.add(new EntityData<>(healthIdx, EntityDataTypes.FLOAT, health));
+            metadata.add(new EntityData<>(skinIdx, EntityDataTypes.BYTE, (byte) 127));
 
             WrapperPlayServerEntityMetadata packet = new WrapperPlayServerEntityMetadata(entityId, metadata);
             sendPacketSafely(player, packet);
+        } catch (Exception ignored) {}
+    }
 
-        } catch (Exception e) {
+    private static void addPlayerToTab(@NotNull GrimPlayer player, UUID uuid, String name) {
+        UserProfile profile = new UserProfile(uuid, name);
+
+        if (isModernVersion) {
+            EnumSet<WrapperPlayServerPlayerInfoUpdate.Action> actions = EnumSet.of(
+                    WrapperPlayServerPlayerInfoUpdate.Action.ADD_PLAYER,
+                    WrapperPlayServerPlayerInfoUpdate.Action.UPDATE_LISTED,
+                    WrapperPlayServerPlayerInfoUpdate.Action.UPDATE_LATENCY,
+                    WrapperPlayServerPlayerInfoUpdate.Action.UPDATE_DISPLAY_NAME
+            );
+
+            WrapperPlayServerPlayerInfoUpdate.PlayerInfo data = new WrapperPlayServerPlayerInfoUpdate.PlayerInfo(
+                    profile,
+                    true,
+                    50,
+                    GameMode.SURVIVAL,
+                    Component.text(name),
+                    null
+            );
+
+            sendPacketSafely(player, new WrapperPlayServerPlayerInfoUpdate(actions, Collections.singletonList(data)));
+        } else {
+            WrapperPlayServerPlayerInfo.PlayerData data = new WrapperPlayServerPlayerInfo.PlayerData(
+                    Component.text(name), profile, GameMode.SURVIVAL, 50);
+            sendPacketSafely(player, new WrapperPlayServerPlayerInfo(WrapperPlayServerPlayerInfo.Action.ADD_PLAYER, data));
         }
     }
 
-    private static void addPlayerToTabListWithPing(@NotNull GrimPlayer player, UUID uuid, String name) {
-        try {
-            int randomPing = ThreadLocalRandom.current().nextInt(91) + 10;
-            UserProfile profile = new UserProfile(uuid, name);
-
-            WrapperPlayServerPlayerInfo.PlayerData data = new WrapperPlayServerPlayerInfo.PlayerData(
-                    Component.text(name),
-                    profile,
-                    GameMode.SURVIVAL,
-                    randomPing
-            );
-
-            WrapperPlayServerPlayerInfo addPacket = new WrapperPlayServerPlayerInfo(
-                    WrapperPlayServerPlayerInfo.Action.ADD_PLAYER,
-                    data
-            );
-            sendPacketSafely(player, addPacket);
-        } catch (Exception e) {
-        }
-    }
-
-    private static void removePlayerFromTabList(@NotNull GrimPlayer player, UUID uuid, String name) {
-        try {
-            UserProfile profile = new UserProfile(uuid, name);
-            WrapperPlayServerPlayerInfo.PlayerData data = new WrapperPlayServerPlayerInfo.PlayerData(
-                    Component.text(name),
-                    profile,
-                    GameMode.SURVIVAL,
-                    0
-            );
-
-            WrapperPlayServerPlayerInfo removePacket = new WrapperPlayServerPlayerInfo(
-                    WrapperPlayServerPlayerInfo.Action.REMOVE_PLAYER,
-                    data
-            );
-            sendPacketSafely(player, removePacket);
-        } catch (Exception ignored) {
+    private static void removeNpcFromTab(@NotNull GrimPlayer player, @NotNull TrackedNpc npc) {
+        if (isModernVersion) {
+            sendPacketSafely(player, new WrapperPlayServerPlayerInfoRemove(npc.uuid));
+        } else {
+            UserProfile profile = new UserProfile(npc.uuid, npc.name);
+            WrapperPlayServerPlayerInfo.PlayerData data = new WrapperPlayServerPlayerInfo.PlayerData(Component.text(npc.name), profile, GameMode.SURVIVAL, 0);
+            sendPacketSafely(player, new WrapperPlayServerPlayerInfo(WrapperPlayServerPlayerInfo.Action.REMOVE_PLAYER, data));
         }
     }
 
     private static void spawnPlayerEntity(@NotNull GrimPlayer player, int entityId, UUID uuid, Location loc) {
-        WrapperPlayServerSpawnPlayer spawn = new WrapperPlayServerSpawnPlayer(
-                entityId,
-                uuid,
-                loc
-        );
-        sendPacketSafely(player, spawn);
+        detectVersion();
+        if (version.isNewerThanOrEquals(ServerVersion.V_1_20_2)) {
+            WrapperPlayServerSpawnEntity spawn = new WrapperPlayServerSpawnEntity(
+                    entityId,
+                    Optional.of(uuid),
+                    com.github.retrooper.packetevents.protocol.entity.type.EntityTypes.PLAYER,
+                    loc.getPosition(),
+                    loc.getPitch(),
+                    loc.getYaw(),
+                    loc.getYaw(),
+                    0,
+                    Optional.empty()
+            );
+            sendPacketSafely(player, spawn);
+        } else {
+            WrapperPlayServerSpawnPlayer spawn = new WrapperPlayServerSpawnPlayer(
+                    entityId,
+                    uuid,
+                    loc
+            );
+            sendPacketSafely(player, spawn);
+        }
     }
 
     private static void rotateHead(@NotNull GrimPlayer player, int entityId, Location loc) {
@@ -434,7 +434,7 @@ public class NpcManager {
     public static void destroyNpc(@NotNull GrimPlayer player, @NotNull TrackedNpc npc) {
         try {
             if (npc.shouldManageTab) {
-                removePlayerFromTabList(player, npc.uuid, npc.name);
+                removeNpcFromTab(player, npc);
             }
             WrapperPlayServerDestroyEntities destroy = new WrapperPlayServerDestroyEntities(npc.entityId);
             sendPacketSafely(player, destroy);

@@ -69,9 +69,9 @@ public class GrimLog implements BuildableCommand {
 
     @Override
     public void register(CommandManager<Sender> commandManager) {
-        Command<Sender> command = commandManager.commandBuilder("grim", "grimac")
+        Command<Sender> command = commandManager.commandBuilder("snowgrim", "snowgrimac")
                 .literal("log", "logs")
-                .permission("grim.log")
+                .permission("snowgrim.log")
                 .required("flagId", IntegerParser.integerParser())
                 .handler(this::handleLog)
                 .manager(commandManager)

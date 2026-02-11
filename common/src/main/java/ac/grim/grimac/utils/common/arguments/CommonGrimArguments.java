@@ -7,8 +7,8 @@ import static ac.grim.grimac.utils.common.arguments.ArgumentUtils.string;
 
 public class CommonGrimArguments {
 
-    private final static SystemArgumentFactory FACTORY = SystemArgumentFactory.Builder.of("Grim")
-            .optionModifier(builder -> builder.key("Grim" + builder.options().getKey()))
+    private final static SystemArgumentFactory FACTORY = SystemArgumentFactory.Builder.of("SnowGrim")
+            .optionModifier(builder -> builder.key("SnowGrim" + builder.options().getKey()))
             .supportEnv()
             .build();
 
