@@ -368,6 +368,8 @@ public class GrimPlayer implements GrimUser {
         return rotationData.cinematicRotation;
     }
 
+    public final List<Double> ls = new ArrayList<>();
+
     public boolean isSprintSimulation() {
         boolean isState = IceUtil.isOnIce(this) || FluidUtil.isInFluid(this) || WebUtil.isInWeb(this);
         if (this.inVehicle() || this.isFlying || this.isGliding || isState) return false;

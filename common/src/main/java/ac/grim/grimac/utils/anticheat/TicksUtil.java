@@ -8,11 +8,11 @@ import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientIn
 public class TicksUtil {
     public static long getTick(GrimPlayer player, PacketTypeCommon type, WrapperPlayClientEntityAction.Action action) {
         String key = type.getName() + ";" + action.name();
-        return player.ticks.getOrDefault(key, null);
+        return player.ticks.getOrDefault(key, -1L);
     }
 
     public static long getTick(GrimPlayer player, PacketTypeCommon type, WrapperPlayClientInteractEntity.InteractAction action) {
         String key = type.getName() + ";" + action.name();
-        return player.ticks.getOrDefault(key, null);
+        return player.ticks.getOrDefault(key, -1L);
     }
 }

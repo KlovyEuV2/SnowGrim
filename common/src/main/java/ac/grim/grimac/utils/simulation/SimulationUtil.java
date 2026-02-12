@@ -110,9 +110,8 @@ public class SimulationUtil {
         return (Math.abs(deltaXZ-a) < thr);
     }
 
-    public static boolean isJump(int sLvl, double deltaY, double thr) {
-        double a = 0.41999998688697815 * (1+(sLvl * 0.2381));
-        return (Math.abs(deltaY-a) < thr);
+    public static boolean isJump(double jumpStrength, double deltaY, double thr) {
+        return (Math.abs(deltaY - jumpStrength) < thr);
     }
 
     public static boolean isBlockCollision(double deltaY, double thr, boolean boat, boolean half) {

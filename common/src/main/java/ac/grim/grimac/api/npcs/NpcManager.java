@@ -687,6 +687,8 @@ public class NpcManager {
         public double lastRelY = 0;
         public double lastRelZ = 0;
         public float health = 20.0f;
+        public long lastAttack = Long.MAX_VALUE;
+        public long lastAttackDiff = Long.MAX_VALUE;
         public GrimPlayer owner, copying;
 
         public TrackedNpc(int entityId, UUID uuid, String name, long lastUsed, long liveTime, boolean shouldManageTab) {
@@ -707,7 +709,7 @@ public class NpcManager {
         }
     }
 
-    private static class Vector3d {
+    public static class Vector3d {
         public double x, y, z;
 
         public Vector3d(double x, double y, double z) {

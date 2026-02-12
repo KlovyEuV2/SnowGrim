@@ -247,10 +247,8 @@ public class MovementTicker {
         player.stuckSpeedMultiplier = new Vector3dm(1, 1, 1);
 
         // 1.15 and older clients use the handleInsideBlocks method for lava
-        if (player.getClientVersion().isOlderThan(ClientVersion.V_1_16)) {
-            player.wasWasTouchingLava = player.wasTouchingLava;
+        if (player.getClientVersion().isOlderThan(ClientVersion.V_1_16))
             player.wasTouchingLava = false;
-        }
 
         Collisions.handleInsideBlocks(player);
 
@@ -432,7 +430,6 @@ public class MovementTicker {
             player.friction = swimFriction; // Not vanilla, just useful for other grim stuff
             doWaterMove(swimSpeed, isFalling, swimFriction);
 
-            player.wasClimbing = player.isClimbing;
             player.isClimbing = Collisions.onClimbable(player, player.x, player.y, player.z);
 
             // 1.13 and below players can't climb ladders while touching water

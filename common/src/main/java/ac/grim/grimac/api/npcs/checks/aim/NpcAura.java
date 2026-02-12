@@ -26,12 +26,14 @@ public class NpcAura extends Check implements PacketCheck {
             UUID uuid = player.getUniqueId();
             WrapperPlayClientInteractEntity.InteractAction action = packet.getAction();
 
+            long now = System.currentTimeMillis();
             if (action == WrapperPlayClientInteractEntity.InteractAction.ATTACK) {
                 NpcManager.TrackedNpc npc = NpcManager.npcMap.getOrDefault(uuid,null);
                 if (npc == null) return;
                 boolean attackedNpc = packet.getEntityId() == npc.entityId;
                 if (attackedNpc && flagAndAlert("type=" + action.name() + ", npc=" + npc.entityId)) {
                     NpcUtil.spawnNpc(player);
+                    npc.lastAttack = now;
                 }
             }
         }
